@@ -15,11 +15,10 @@ jobs:
     uses: infrapi/ci/.github/workflows/go.yml@v1
     permissions:
       contents: write   # the tag and the release
-      packages: write   # the image, on ghcr.io
     with:
       binary: terraform-provider-kayra
       release: semantic
-      docker: false
+      gpg-sign: true    # SHA256SUMS signed for the registries
       notify-docs: true
     secrets: inherit
 

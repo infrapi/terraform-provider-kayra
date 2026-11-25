@@ -111,5 +111,5 @@ federated credential to the service account.
 
 ## Release
 
-[RELEASING.md](RELEASING.md): a tag, a signed GitHub release, and the
-registries.
+[RELEASING.md](RELEASING.md): a `feat:` or `fix:` merged to `main`, a
+signed GitHub release, and the registries.

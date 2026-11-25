@@ -5,7 +5,11 @@ releases: zips of the binary per platform,
 `terraform-provider-kayra_<version>_SHA256SUMS`, its GPG signature
 `..._SHA256SUMS.sig`, and the manifest
 `terraform-provider-kayra_<version>_manifest.json`. GoReleaser makes them
-(`.goreleaser.yaml`), `.github/workflows/release.yml` on a tag `v<x.y.z>`.
+(`.goreleaser.yaml`) in the CI, infrapi/ci's `release: semantic` with
+`gpg-sign: true` (`.github/workflows/ci.yml`): on a push to `main`,
+go-semantic-release makes the version from the conventional commits, its
+tag and the GitHub release, then GoReleaser builds, signs and appends the
+files, in the same job.
 
 ## Once
 
@@ -16,19 +20,21 @@ releases: zips of the binary per platform,
    OpenTofu registry checks it at submission):
 
    ```bash
-   gpg --full-generate-key
+   gpg --quick-generate-key "InfraPI releases <releases@infrapi.io>" rsa4096 sign 2y
    gpg --armor --export-secret-keys <fingerprint>   # the GPG_PRIVATE_KEY secret
    gpg --armor --export <fingerprint>               # the public key, for the registries
    ```
 
 3. In the repository's settings, the Actions secrets `GPG_PRIVATE_KEY` and
-   `PASSPHRASE`.
+   `PASSPHRASE`, before a `feat:` or `fix:` reaches `main`: its push
+   releases, and the release fails without the key.
 
 ## Each release
 
-1. Tag and push: `git tag v0.1.0 && git push origin v0.1.0`. The release
-   workflow publishes the GitHub release. `make snapshot` builds the same
-   files locally, unsigned.
+1. Merge to `main` a `feat:` (a minor version) or a `fix:` (a patch); a
+   `chore:` or `docs:` releases nothing. The CI's checks pass, then the
+   release. `make snapshot` builds the same files
+   locally, unsigned.
 
 ## On the OpenTofu registry, once
 
@@ -58,13 +64,13 @@ its web UI, by a member of the `infrapi` GitHub org.
 3. The signing key: **User Settings > Signing Keys > New GPG Key**,
    namespace `infrapi`, the ASCII-armored public key
    (`gpg --armor --export <fingerprint>`).
-4. A first release must exist: tag `v0.1.0` first (above), and check its
+4. A signed release must exist (above); check its
    GitHub release has the zips, `..._SHA256SUMS`, `..._SHA256SUMS.sig` and
    `..._manifest.json`.
 5. **Publish > Provider**, organization `infrapi`, repository
    `terraform-provider-kayra`, then **Publish**. The registry adds a webhook
    to the repository (it needs admin rights on it): each later release is
-   published by itself, its docs from `docs/` at the tag.
+   published by itself, its docs from `docs/` at its tag.
 
 Then `source = "infrapi/kayra"` in Terraform resolves to
 `registry.terraform.io/infrapi/kayra`, and

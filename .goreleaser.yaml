@@ -1,6 +1,7 @@
 # The release the OpenTofu and Terraform registries read: a zip per
 # platform, terraform-provider-kayra_<version>_<os>_<arch>.zip, their
 # SHA256SUMS signed with the GPG key the registry knows, and the manifest.
+# infrapi/ci's release runs it (gpg-sign: GPG_FINGERPRINT).
 version: 2
 
 before:
@@ -49,10 +50,12 @@ signs:
       - --detach-sign
       - "${artifact}"
 
+# go-semantic-release made the GitHub release and its notes: append to it
 release:
+  mode: append
   extra_files:
     - glob: terraform-registry-manifest.json
       name_template: "{{ .ProjectName }}_{{ .Version }}_manifest.json"
 
 changelog:
-  use: github
+  disable: true
