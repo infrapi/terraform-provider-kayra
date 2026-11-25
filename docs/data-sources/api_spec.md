@@ -1,4 +1,6 @@
 ---
+title: kayra_api_spec
+weight: 10
 page_title: "kayra_api_spec Data Source - kayra"
 subcategory: ""
 description: |-

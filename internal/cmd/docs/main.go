@@ -76,7 +76,9 @@ func read(path string) string {
 func index(s *tfprotov6.Schema, examples string) string {
 	var b strings.Builder
 	desc := s.Block.Description
-	fmt.Fprintf(&b, "---\npage_title: \"Provider: Kayra\"\ndescription: |-\n  %s\n---\n\n# Kayra Provider\n\n%s\n\n", desc, desc)
+	// page_title, subcategory and description are the registries';
+	// title and weight the InfraPI portal's (infrapi/docs), which mounts docs/
+	fmt.Fprintf(&b, "---\ntitle: Kayra provider\nweight: 10\npage_title: \"Provider: Kayra\"\ndescription: |-\n  %s\n---\n\n# Kayra Provider\n\n%s\n\n", desc, desc)
 	b.WriteString("Kayra is InfraPI's identity, namespaces, RBAC and API catalog: " +
 		"<https://infrapi.github.io/products/kayra/>. Every attribute of a resource is a property of Kayra's object, " +
 		"as its contract (OpenAPI) describes it, so a plan shows a change per property.\n\n")
@@ -94,8 +96,9 @@ func index(s *tfprotov6.Schema, examples string) string {
 func page(name, kind string, s *tfprotov6.Schema, example, imp string) string {
 	var b strings.Builder
 	desc := strings.TrimSpace(s.Block.Description)
-	fmt.Fprintf(&b, "---\npage_title: \"%s %s - kayra\"\nsubcategory: \"\"\ndescription: |-\n  %s\n---\n\n# %s (%s)\n\n%s\n\n",
-		name, kind, desc, name, kind, desc)
+	// the portal's sidebar: one weight, pages by title
+	fmt.Fprintf(&b, "---\ntitle: %s\nweight: 10\npage_title: \"%s %s - kayra\"\nsubcategory: \"\"\ndescription: |-\n  %s\n---\n\n# %s (%s)\n\n%s\n\n",
+		name, name, kind, desc, name, kind, desc)
 	if ex := read(example); ex != "" {
 		fmt.Fprintf(&b, "## Example Usage\n\n```terraform\n%s\n```\n\n", ex)
 	}

@@ -1,4 +1,6 @@
 ---
+title: Kayra provider
+weight: 10
 page_title: "Provider: Kayra"
 description: |-
   Manage Kayra: namespaces, API registrations and subscriptions, the RBAC, service accounts and personal access tokens.

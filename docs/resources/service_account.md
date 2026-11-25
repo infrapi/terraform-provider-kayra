@@ -1,4 +1,6 @@
 ---
+title: kayra_service_account
+weight: 10
 page_title: "kayra_service_account Resource - kayra"
 subcategory: ""
 description: |-

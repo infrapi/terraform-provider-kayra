@@ -1,4 +1,6 @@
 ---
+title: kayra_api_registration_status
+weight: 10
 page_title: "kayra_api_registration_status Data Source - kayra"
 subcategory: ""
 description: |-

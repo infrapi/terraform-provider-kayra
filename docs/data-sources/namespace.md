@@ -1,4 +1,6 @@
 ---
+title: kayra_namespace
+weight: 10
 page_title: "kayra_namespace Data Source - kayra"
 subcategory: ""
 description: |-

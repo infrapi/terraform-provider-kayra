@@ -1,4 +1,6 @@
 ---
+title: kayra_subscription
+weight: 10
 page_title: "kayra_subscription Resource - kayra"
 subcategory: ""
 description: |-

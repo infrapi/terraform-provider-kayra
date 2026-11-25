@@ -1,4 +1,6 @@
 ---
+title: kayra_cluster_group
+weight: 10
 page_title: "kayra_cluster_group Resource - kayra"
 subcategory: ""
 description: |-

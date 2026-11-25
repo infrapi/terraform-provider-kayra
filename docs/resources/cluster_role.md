@@ -1,4 +1,6 @@
 ---
+title: kayra_cluster_role
+weight: 10
 page_title: "kayra_cluster_role Resource - kayra"
 subcategory: ""
 description: |-

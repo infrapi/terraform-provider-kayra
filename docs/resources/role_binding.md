@@ -1,4 +1,6 @@
 ---
+title: kayra_role_binding
+weight: 10
 page_title: "kayra_role_binding Resource - kayra"
 subcategory: ""
 description: |-

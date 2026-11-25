@@ -1,4 +1,6 @@
 ---
+title: kayra_api_registration
+weight: 10
 page_title: "kayra_api_registration Resource - kayra"
 subcategory: ""
 description: |-

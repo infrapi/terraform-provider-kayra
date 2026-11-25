@@ -1,4 +1,6 @@
 ---
+title: kayra_token
+weight: 10
 page_title: "kayra_token Resource - kayra"
 subcategory: ""
 description: |-
