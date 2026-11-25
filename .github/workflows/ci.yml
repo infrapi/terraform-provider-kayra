@@ -5,17 +5,20 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  # gofmt, vet, golangci-lint, gosec, go test -race and the build; the
-  # release is release.yml's, signed for the registries
   go:
     uses: infrapi/ci/.github/workflows/go.yml@v1
+    permissions:
+      contents: write   # the tag and the release
     with:
-      release: none
+      release: semantic
+      notify-docs: true
+    secrets: inherit
 
   # zz_generated.go and docs/ are the contracts' and the schemas'
   generated:
