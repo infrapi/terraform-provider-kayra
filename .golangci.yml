@@ -1,0 +1,20 @@
+# golangci-lint v2 (make lint). The generated files, zz_generated.go, are
+# left out by their "Code generated" header.
+version: "2"
+
+linters:
+  enable:
+    - bodyclose
+    - errorlint
+    - gosec
+    - misspell
+    - unconvert
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/infrapi/terraform-provider-kayra

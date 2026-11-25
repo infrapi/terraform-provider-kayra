@@ -1,0 +1,8 @@
+bin/
+/dist/
+/terraform-provider-kayra
+cover.out
+coverage.html
+.terraform/
+*.tfstate*
+.terraformrc

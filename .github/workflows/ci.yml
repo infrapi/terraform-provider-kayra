@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  # gofmt, vet, golangci-lint, gosec, go test -race and the build; the
+  # release is release.yml's, signed for the registries
+  go:
+    uses: infrapi/ci/.github/workflows/go.yml@v1
+    with:
+      release: none
+
+  # zz_generated.go and docs/ are the contracts' and the schemas'
+  generated:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+      - run: go generate ./...
+      - name: Generated files up to date
+        run: git diff --exit-code -- internal/provider/zz_generated.go docs/
