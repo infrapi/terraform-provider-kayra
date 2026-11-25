@@ -8,7 +8,8 @@ before:
     - go mod tidy
 
 builds:
-  - env:
+  - main: ./cmd/terraform-provider-kayra
+    env:
       - CGO_ENABLED=0
     mod_timestamp: "{{ .CommitTimestamp }}"
     flags:

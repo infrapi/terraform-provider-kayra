@@ -36,10 +36,10 @@ testacc: ## the acceptance tests, against KAYRA_URL with KAYRA_TOKEN, tofu on th
 		go test -v -count=1 -timeout 10m ./internal/provider/ -run TestAcc
 
 build: ## bin/terraform-provider-kayra
-	CGO_ENABLED=0 go build -trimpath -o bin/$(BINARY) .
+	CGO_ENABLED=0 go build -trimpath -o bin/$(BINARY) ./cmd/$(BINARY)
 
 install: ## the provider in ~/go/bin, for dev_overrides
-	go install .
+	go install ./cmd/$(BINARY)
 
 snapshot: ## every release artifact, locally, unsigned and unpublished (goreleaser)
 	goreleaser release --snapshot --clean --skip=sign
