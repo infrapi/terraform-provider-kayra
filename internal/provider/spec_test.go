@@ -42,7 +42,7 @@ func specKayra(t *testing.T) *httptest.Server {
 
 func TestSpec(t *testing.T) {
 	ctx := context.Background()
-	c, err := newClient(ctx, specKayra(t).URL, "secret")
+	c, err := newClient(ctx, specKayra(t).URL, "secret", "terraform-provider-kayra/test")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -137,7 +137,7 @@ func writeProblem(w http.ResponseWriter, status int, title, detail string) {
 
 func testResource(t *testing.T, typ, url string) *kayraResource {
 	t.Helper()
-	c, err := newClient(context.Background(), url, "secret")
+	c, err := newClient(context.Background(), url, "secret", "terraform-provider-kayra/test")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -419,13 +419,37 @@ func TestProblemDiagnostic(t *testing.T) {
 
 func TestNewClient_refuses(t *testing.T) {
 	for _, url := range []string{"", "kayra.example.com", "ftp://kayra.example.com"} {
-		if _, err := newClient(context.Background(), url, ""); err == nil {
+		if _, err := newClient(context.Background(), url, "", "terraform-provider-kayra/test"); err == nil {
 			t.Errorf("%q: no error", url)
 		}
 	}
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) { _, _ = w.Write([]byte(`{"apis": {}}`)) }))
 	defer srv.Close()
-	if _, err := newClient(context.Background(), srv.URL, ""); err == nil || !strings.Contains(err.Error(), "is it Kayra") {
+	if _, err := newClient(context.Background(), srv.URL, "", "terraform-provider-kayra/test"); err == nil || !strings.Contains(err.Error(), "is it Kayra") {
 		t.Errorf("not Kayra: %v", err)
+	}
+}
+
+// Every request names the provider and the tool running it.
+func TestUserAgent(t *testing.T) {
+	if got := userAgent("0.1.2", "1.9.0"); got != "terraform-provider-kayra/0.1.2 Terraform/1.9.0" {
+		t.Errorf("userAgent = %q", got)
+	}
+	if got := userAgent("dev", ""); got != "terraform-provider-kayra/dev" {
+		t.Errorf("userAgent without the tool's version = %q", got)
+	}
+	var got string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		got = r.UserAgent()
+		_ = json.NewEncoder(w).Encode(map[string]any{"apis": map[string]string{
+			"system": "/apis/system.infrapi.io/v1", "catalog": "/apis/catalog.infrapi.io/v1", "authorization": "/apis/authorization.infrapi.io/v1",
+		}})
+	}))
+	defer srv.Close()
+	if _, err := newClient(context.Background(), srv.URL, "", "terraform-provider-kayra/0.1.2 Terraform/1.9.0"); err != nil {
+		t.Fatal(err)
+	}
+	if got != "terraform-provider-kayra/0.1.2 Terraform/1.9.0" {
+		t.Errorf("User-Agent sent %q", got)
 	}
 }

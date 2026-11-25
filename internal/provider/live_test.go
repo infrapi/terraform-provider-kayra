@@ -16,7 +16,7 @@ import (
 // KAYRA_LIVE_TOKEN: the provider's operations, without OpenTofu.
 func liveResource(t *testing.T, typ string) *kayraResource {
 	t.Helper()
-	c, err := newClient(context.Background(), os.Getenv("KAYRA_LIVE_URL"), os.Getenv("KAYRA_LIVE_TOKEN"))
+	c, err := newClient(context.Background(), os.Getenv("KAYRA_LIVE_URL"), os.Getenv("KAYRA_LIVE_TOKEN"), "terraform-provider-kayra/test")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -78,7 +78,10 @@ func (p *kayraProvider) Configure(ctx context.Context, req provider.ConfigureReq
 		}
 		token = strings.TrimSpace(string(data))
 	}
-	cl, err := newClient(ctx, url, token)
+	// Kayra's logs tell the provider and the tool running it, at their
+	// versions; OpenTofu gives its own version under Terraform's field
+	ua := userAgent(p.version, req.TerraformVersion)
+	cl, err := newClient(ctx, url, token, ua)
 	if err != nil {
 		resp.Diagnostics.AddError("Connecting to Kayra", err.Error())
 		return
@@ -100,4 +103,15 @@ func (p *kayraProvider) DataSources(context.Context) []func() datasource.DataSou
 		out = append(out, func() datasource.DataSource { return &kayraDataSource{d: d} })
 	}
 	return append(out, func() datasource.DataSource { return &specDataSource{} })
+}
+
+// userAgent is the provider's User-Agent, two product tokens (RFC 9110):
+// terraform-provider-kayra/0.1.2 Terraform/1.9.0, the second left out when
+// the tool's version is not known.
+func userAgent(version, toolVersion string) string {
+	ua := "terraform-provider-kayra/" + version
+	if toolVersion != "" {
+		ua += " Terraform/" + toolVersion
+	}
+	return ua
 }

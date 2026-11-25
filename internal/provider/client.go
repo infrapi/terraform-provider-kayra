@@ -17,10 +17,11 @@ import (
 // client calls Kayra: url its base, the groups' roots from its
 // /.well-known/kayra.json.
 type client struct {
-	url   string
-	token string
-	http  *http.Client
-	roots map[string]string // system, catalog, authorization, events: /apis/<group>/v1
+	url       string
+	token     string
+	userAgent string
+	http      *http.Client
+	roots     map[string]string // system, catalog, authorization, events: /apis/<group>/v1
 }
 
 // errNotFound is a 404: the object is gone.
@@ -58,13 +59,13 @@ func (e *apiError) Is(target error) bool {
 	return target == errNotFound && e.Problem.Status == http.StatusNotFound
 }
 
-// newClient discovers Kayra's groups at base.
-func newClient(ctx context.Context, base, token string) (*client, error) {
+// newClient discovers Kayra's groups at base; its requests carry userAgent.
+func newClient(ctx context.Context, base, token, userAgent string) (*client, error) {
 	u, err := url.Parse(base)
 	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
 		return nil, fmt.Errorf("url %q: Kayra's, like https://kayra.example.com", base)
 	}
-	c := &client{url: strings.TrimRight(base, "/"), token: token, http: &http.Client{Timeout: 60 * time.Second}}
+	c := &client{url: strings.TrimRight(base, "/"), token: token, userAgent: userAgent, http: &http.Client{Timeout: 60 * time.Second}}
 	var doc struct {
 		APIs map[string]string `json:"apis"`
 	}
@@ -114,7 +115,7 @@ func (c *client) do(ctx context.Context, method, path string, in, out any) error
 		return err
 	}
 	req.Header.Set("Accept", "application/json")
-	req.Header.Set("User-Agent", "terraform-provider-kayra")
+	req.Header.Set("User-Agent", c.userAgent)
 	if in != nil {
 		req.Header.Set("Content-Type", "application/json")
 	}
